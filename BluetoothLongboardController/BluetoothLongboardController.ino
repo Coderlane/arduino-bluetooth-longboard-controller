@@ -1,7 +1,5 @@
-#include <HardwareBluetoothRN42.h>
-#include <HardwareSerial.h>
 #include <Throttle.h>
-
+#include <HardwareBluetoothRN42.h>
 
 // Must be analog pin
 const int throttle_pin = 18; // A0
@@ -15,7 +13,7 @@ int status_led_state = LOW;
 int recent_disconnect = 0;
 
 Throttle throttle(throttle_pin);
-HardwareBluetoothRN42 bluetooth((HardwareSerial&) Serial, status_pin, 0, "BlueRemote", "3145");
+HardwareBluetoothRN42 bluetooth((HardwareSerial&) Serial, status_pin, 0, "BlueRemoteDemo", "3145");
 
 void connection_up();
 void connection_lost();
