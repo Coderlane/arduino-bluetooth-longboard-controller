@@ -10,7 +10,7 @@ const int high_throttle_value = 1023;
 const int low_throttle_value = 0;
 
 //Must be analog pin
-const int throttle_pin = 18; // A0
+const int throttle_pin = 23; // A5
 
 const int status_pin = 2;
 const int status_led_pin = 3;
@@ -21,7 +21,7 @@ int status_led_state = LOW;
 int recent_disconnect = 0;
 
 Throttle throttle(throttle_pin, low_throttle_value, high_throttle_value);
-HardwareBluetoothRN42 bluetooth((HardwareSerial&) Serial, status_pin, 0, "BlueRemoteDemo", "3145");
+HardwareBluetoothRN42 bluetooth(Serial1, status_pin, 0, "BlueRemoteDemo", "3145");
 
 void connection_up();
 void connection_lost();
@@ -30,6 +30,8 @@ void connection_down();
 void
 setup()
 {
+  delay(1000);
+  analogReference(DEFAULT);
   bluetooth.setup();
   pinMode(status_led_pin, OUTPUT);
 }
@@ -44,7 +46,7 @@ loop ()
     if (bluetooth.isConnected()) {
       connection_up();
     } else {
-      if (recent_disconnect < 10) {
+      if (recent_disconnect < 50) {
         connection_lost();
       } else {
         connection_down();
