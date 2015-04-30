@@ -26,3 +26,5 @@
 *.exe
 *.out
 *.app
+BluetoothLongboardController/Visual Micro/*
+BluetoothLongboardController/BluetoothLongboardController.sdf
