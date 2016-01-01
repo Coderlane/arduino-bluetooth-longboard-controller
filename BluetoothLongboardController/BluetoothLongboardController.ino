@@ -3,7 +3,7 @@
 
 #define LOW_RESISTANCE 10 // 10 Ohms measured
 #define HIGH_RESISTANCE 60 // 60 Ohms measured
-#define REFERENCE_VOLTAGE 3.3 // 3.3V 
+#define REFERENCE_VOLTAGE 3.3 // 3.3V
 
 const int high_throttle_value = 1023;
 const int low_throttle_value = 0;
@@ -15,12 +15,12 @@ const int status_pin = 2;
 const int status_led_pin = 3;
 
 long prev_millis = 0;
-long interval_millis = 1000;
+long interval_millis = 250;
 int status_led_state = LOW;
 int recent_disconnect = 0;
 
 Throttle throttle(throttle_pin, low_throttle_value, high_throttle_value);
-HardwareBluetoothRN42 bluetooth(Serial1, status_pin, 0, "BlueController", "3145");
+HardwareBluetoothRN42 bluetooth(Serial1, status_pin, 0, "BlueController");
 
 void connection_up();
 void connection_lost();
@@ -57,7 +57,7 @@ inline void connection_up()
 	// Connection is up.
 
 	recent_disconnect = 0;
-	interval_millis = 1000;
+	interval_millis = 250;
 
 	int percent = throttle.read();
 	// Send the data
