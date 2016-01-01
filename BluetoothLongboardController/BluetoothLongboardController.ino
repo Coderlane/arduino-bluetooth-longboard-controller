@@ -1,7 +1,6 @@
 #include <Throttle.h>
 #include <HardwareBluetoothRN42.h>
 
-
 #define LOW_RESISTANCE 10 // 10 Ohms measured
 #define HIGH_RESISTANCE 60 // 60 Ohms measured
 #define REFERENCE_VOLTAGE 3.3 // 3.3V 
@@ -21,7 +20,7 @@ int status_led_state = LOW;
 int recent_disconnect = 0;
 
 Throttle throttle(throttle_pin, low_throttle_value, high_throttle_value);
-HardwareBluetoothRN42 bluetooth(Serial1, status_pin, 0, "BlueRemoteDemo", "3145");
+HardwareBluetoothRN42 bluetooth(Serial1, status_pin, 0, "BlueController", "3145");
 
 void connection_up();
 void connection_lost();
