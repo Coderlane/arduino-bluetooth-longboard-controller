@@ -14,6 +14,7 @@ const int throttle_pin = 23; // A5
 const int status_pin = 2;
 const int status_led_pin = 3;
 
+long cur_millis = 0;
 long prev_millis = 0;
 long interval_millis = 250;
 int status_led_state = LOW;
@@ -26,6 +27,8 @@ void connection_up();
 void connection_lost();
 void connection_down();
 
+int percent_to_str(int percent, char *str);
+
 void setup()
 {
   delay(1000);
@@ -36,7 +39,7 @@ void setup()
 
 void loop ()
 {
-  long cur_millis = millis();
+  cur_millis = millis();
   if (cur_millis - prev_millis > interval_millis) {
     prev_millis = cur_millis;
 
@@ -52,6 +55,7 @@ void loop ()
 
 inline void connection_up()
 {
+  char str[4];
   // Connection is up.
 
   recent_disconnect = 0;
@@ -59,7 +63,9 @@ inline void connection_up()
 
   int percent = throttle.read();
   // Send the data
-  bluetooth.println(percent);
+  if(percent_to_str(percent, str) == 0) {
+    bluetooth.println(str);
+  }
 
   if (status_led_state != HIGH) {
     // Turn on LED
@@ -96,4 +102,28 @@ inline void connection_down()
     digitalWrite(status_led_pin, LOW);
     status_led_state = LOW;
   }
+}
+
+
+// Change percent to a string w/ zeros in it.
+// Str must be char[4] or more.
+// Percent should be 0 to 100;
+// If it is not, return -1 and set str[0] to the null terminator.
+int percent_to_str(int percent, char *str)
+{
+  int hundreds, tens, ones;
+  if (percent < 0 || percent > 100) {
+    str[0] = '\0';
+    return -1;  
+  }
+  
+  hundreds = percent / 100;
+  tens = (percent - (hundreds * 100)) / 10;
+  ones = percent - (tens * 10);
+  
+  str[0] = '0' + hundreds;
+  str[1] = '0' + tens;
+  str[2] = '0' + ones;
+  str[3] = '\0';
+  return 0;
 }
