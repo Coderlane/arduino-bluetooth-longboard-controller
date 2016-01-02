@@ -42,12 +42,10 @@ void loop ()
 
 		if (bluetooth.isConnected()) {
 			connection_up();
-		} else {
-			if (recent_disconnect < 50) {
-				connection_lost();
-			} else {
-				connection_down();
-			}
+		} else if (recent_disconnect < 50) {
+			connection_lost();
+	        } else {
+			connection_down();
 		}
 	}
 }
