@@ -1,4 +1,5 @@
 #include <Throttle.h>
+#include <Connection.h>
 #include <HardwareBluetoothRN42.h>
 
 #define LOW_RESISTANCE 10 // 10 Ohms measured
@@ -9,10 +10,10 @@ const int high_throttle_value = 1023;
 const int low_throttle_value = 0;
 
 //Must be analog pin
-const int throttle_pin = 23; // A5
+const int throttle_pin = 23;   // A5
 
-const int status_pin = 2;
-const int status_led_pin = 3;
+const int status_pin = 2;      // D2
+const int status_led_pin = 3;  // D3
 
 long cur_millis = 0;
 long prev_millis = 0;
@@ -22,6 +23,7 @@ int recent_disconnect = 0;
 
 Throttle throttle(throttle_pin, low_throttle_value, high_throttle_value);
 HardwareBluetoothRN42 bluetooth(Serial1, status_pin, 0, "BlueController");
+Connection connection(bluetooth);
 
 void connection_up();
 void connection_lost();
@@ -43,7 +45,7 @@ void loop ()
   if (cur_millis - prev_millis > interval_millis) {
     prev_millis = cur_millis;
 
-    if (bluetooth.isConnected()) {
+    if (bluetooth.connected()) {
       connection_up();
     } else if (recent_disconnect < 50) {
       connection_lost();
@@ -63,9 +65,7 @@ inline void connection_up()
 
   int percent = throttle.read();
   // Send the data
-  if(percent_to_str(percent, str) == 0) {
-    bluetooth.println(str);
-  }
+  connection.write(percent);
 
   if (status_led_state != HIGH) {
     // Turn on LED
@@ -103,7 +103,6 @@ inline void connection_down()
     status_led_state = LOW;
   }
 }
-
 
 // Change percent to a string w/ zeros in it.
 // Str must be char[4] or more.
